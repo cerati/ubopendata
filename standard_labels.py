@@ -91,6 +91,7 @@ def panoptic_label(part):
             elif part.start_process == b'hIoni':
               if abs(parent_type) == 2212:
                 sl = label.hadron.value
+                if part.momentum <= 0.0015: sl = label.invisible.value
               else:
                 sl = label.pion.value
               slc = None
@@ -170,10 +171,10 @@ def panoptic_label(part):
         sl, slc = func(part, parent_type)
 
       # baryon interactions - hadron or diffuse
-      if (particle.pdgid.is_baryon(part.type) and particle.pdgid.charge(part.type) != 0) \
+      if (particle.pdgid.is_baryon(part.type) and particle.pdgid.charge(part.type) == 0) \
         or particle.pdgid.is_nucleus(part.type):
-        sl = label.hadron.value
-      if particle.pdgid.is_baryon(part.type) and particle.pdgid.charge(part.type) == 0:
+        sl = label.diffuse.value
+      if particle.pdgid.is_baryon(part.type) and particle.pdgid.charge(part.type) != 0:
         if abs(part.type) == 2212 and part.momentum >=0.2:
           sl = label.hadron.value
         else:
@@ -186,10 +187,11 @@ def panoptic_label(part):
       return sl, slc
 
     def i(part, particles, sl):
-      il, ilc = -1, -1
-      if sl != label.diffuse.value and sl != label.delta.value:
+      il, ilc = -1, None
+      if sl != label.diffuse.value and sl != label.delta.value and sl != label.invisible.value:
         il = part.g4_id
         if sl == label.shower.value: ilc = il
+        if sl == label.michel.value: ilc = il
       return il, ilc
 
     if sl is not None: slc = sl
@@ -198,7 +200,8 @@ def panoptic_label(part):
     if il is not None: ilc = il
     else: il, ilc = i(part, particles, sl)
 
-    ret = [ { "g4_id": part.g4_id, "parent_id": part.parent_id, "type": part.type, "start_process": part.start_process, "end_process": part.end_process, "momentum": part.momentum,                             "semantic_label": sl, "instance_label": il } ]
+    ret = [ { "g4_id": part.g4_id, "parent_id": part.parent_id, "type": part.type, "start_process": part.start_process, "end_process": part.end_process, "momentum": part.momentum, "semantic_label": sl, "instance_label": il } ]
+
     for _, row in particles[(part.g4_id==particles.parent_id)].iterrows():
       ret += walk(row, particles, depth+1, slc, ilc)
     return ret
