@@ -188,7 +188,11 @@ def panoptic_label(part):
 
     def i(part, particles, sl):
       il, ilc = -1, None
-      if sl != label.diffuse.value and sl != label.delta.value and sl != label.invisible.value:
+      if sl == label.muon.value and part.start_process == b'muIoni':
+        il = part.parent_id
+      elif (sl == label.pion.value or sl == label.hadron.value) and part.start_process == b'hIoni':
+        il = part.parent_id
+      elif sl != label.diffuse.value and sl != label.delta.value and sl != label.invisible.value:
         il = part.g4_id
         if sl == label.shower.value: ilc = il
         if sl == label.michel.value: ilc = il
