@@ -9,6 +9,9 @@ def nwires(p):
     elif p==2: return 3455
     else: raise RuntimeError('plane %i is out of range'%p)
 
+def nopdets():
+    return 32
+
 def wireStartPosPlane0(w):
     if w<0 or w>2399: raise RuntimeError('wire %i is out of range'%w)
     return [0,np.maximum(117.153-0.34641*w,-115.505),np.maximum(-402.941+0.6*w,0.0352608)]
@@ -99,3 +102,12 @@ def tpcTimeToX(t):
     time2cm=0.0548965 #accounts for sampling and drift velocity
     trigOffset=800
     return (t-trigOffset)*time2cm
+
+def barycenter(x,w):
+    return (x*w).sum()/w.sum()
+
+def width(x,w):
+    return np.sqrt(((w*x*x).sum()*w.sum() - (w*x).sum()*(w*x).sum()))/w.sum()
+
+def normOne(a):
+    return np.ones_like(a)/len(a)
