@@ -14,7 +14,7 @@ class label(enum.Enum):
   diffuse = 7
   invisible = 8
 
-def panoptic_label(part):
+def standard(part, th_gamma=0.02, th_hadr=0.2):
   def walk(part, particles, depth, sl, il):
     def s(part, particles):
       import particle  # does this need to be in the closure?
@@ -50,29 +50,9 @@ def panoptic_label(part):
           sl = label.michel.value
           slc = label.michel.value
 
-        elif part.start_process == b'conv':
-          if part.momentum >=0.02:
-            sl = label.shower.value
-            slc = label.shower.value
-          else:
-            sl = label.diffuse.value
-            slc = label.diffuse.value
-        elif part.end_process == b'conv':
-          if part.momentum >= 0.02:
-            sl = label.shower.value
-            slc = label.shower.value
-          else:
-            sl = label.diffuse.value
-            slc = label.diffuse.value
-        elif part.start_process == b'compt':
-          if part.momentum >= 0.02:
-            sl = label.shower.value
-            slc = label.shower.value
-          else:
-            sl = label.diffuse.value
-            slc = label.diffuse.value
-        elif part.end_process == b'compt':
-          if part.momentum >= 0.02:
+        elif part.start_process == b'conv' or part.end_process == b'conv' \
+          or part.start_process == b'compt' or part.end_process == b'compt':
+          if part.momentum >=th_gamma:
             sl = label.shower.value
             slc = label.shower.value
           else:
@@ -112,29 +92,9 @@ def panoptic_label(part):
         return sl, slc
 
       def gamma_labeler(part, parent_type):
-        if part.start_process == b'conv':
-          if part.momentum >=0.02:
-            sl = label.shower.value
-            slc = label.shower.value
-          else:
-            sl = label.diffuse.value
-            slc = label.diffuse.value
-        elif part.end_process == b'conv':
-          if part.momentum >= 0.02:
-            sl = label.shower.value
-            slc = label.shower.value
-          else:
-            sl = label.diffuse.value
-            slc = label.diffuse.value
-        elif part.start_process == b'compt':
-          if part.momentum >= 0.02:
-            sl = label.shower.value
-            slc = label.shower.value
-          else:
-            sl = label.diffuse.value
-            slc = label.diffuse.value
-        elif part.end_process == b'compt':
-          if part.momentum >= 0.02:
+        if part.start_process == b'conv' or part.end_process == b'conv' \
+          or part.start_process == b'compt' or part.end_process == b'compt':
+          if part.momentum >=th_gamma:
             sl = label.shower.value
             slc = label.shower.value
           else:
@@ -175,7 +135,7 @@ def panoptic_label(part):
         or particle.pdgid.is_nucleus(part.type):
         sl = label.diffuse.value
       if particle.pdgid.is_baryon(part.type) and particle.pdgid.charge(part.type) != 0:
-        if abs(part.type) == 2212 and part.momentum >=0.2:
+        if abs(part.type) == 2212 and part.momentum >=th_hadr:
           sl = label.hadron.value
         else:
           sl = label.diffuse.value
@@ -205,7 +165,6 @@ def panoptic_label(part):
     else: il, ilc = i(part, particles, sl)
 
     ret = [ { "g4_id": part.g4_id, "parent_id": part.parent_id, "type": part.type, "start_process": part.start_process, "end_process": part.end_process, "momentum": part.momentum, "semantic_label": sl, "instance_label": il } ]
-
     for _, row in particles[(part.g4_id==particles.parent_id)].iterrows():
       ret += walk(row, particles, depth+1, slc, ilc)
     return ret
@@ -216,6 +175,7 @@ def panoptic_label(part):
   for _, primary in primaries.iterrows():
     ret += walk(primary, part, 0, None, None)
   import pandas as pd
+  if len(ret)==0: return
   labels = pd.DataFrame.from_dict(ret)
   instances = { val: i for i, val in enumerate(labels[(labels.instance_label>=0)].instance_label.unique()) }
 
@@ -225,9 +185,3 @@ def panoptic_label(part):
 
   labels["instance_label"] = labels.apply(alias_instance, args=[instances], axis="columns")
   return labels
-
-def semantic_label(part):
-  return panoptic_label(part).drop("instance_label", axis="columns")
-
-def instance_label(part):
-  return panoptic_label(part).drop("semantic_label", axis="columns")
