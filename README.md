@@ -1,4 +1,4 @@
-# ubopendata
+# MicroBooNE open samples
 
 
 ## Local Setup
