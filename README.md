@@ -32,6 +32,4 @@ We recommend starting from `Sample Exploration.ipynb`, as it provides simple ins
 
 ## Structure and content of input files
 
-The structure and content of the hdf5 input files can be found at this document:
-https://docs.google.com/spreadsheets/d/1ri2RgiwiRhoG6BNuaD5g3u9WDbD_K7AQXj3jWWWSWUU/edit?usp=sharing,
-where each element in the file is documented in terms of its name, type, size, and a human readable description.
+The structure and content of the hdf5 input files can be found at this wiki page: [Structure and content of input files](https://github.com/cerati/ubopendata/wiki/Structure-and-content-of-input-files), where each element in the file is documented in terms of its name, type, size, and a human readable description.
