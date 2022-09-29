@@ -19,7 +19,7 @@ conda install plotly
 conda install pandas
 conda install -c conda-forge particle
 conda install -c conda-forge "h5py>=2.9=mpi*"
-pip install pynuml
+pip install pynuml==0.1
 ```
 
 ## Overview of the notebooks
