@@ -8,7 +8,7 @@ Plus the pynuml package for helper functions used to easily access information i
 
 Recipe:
 ```
-git clone --branch beta  https://github.com/cerati/ubopendata.git ubopendatabetatest
+git clone --branch beta https://github.com/cerati/ubopendata.git ubopendatabetatest
 cd ubopendatabetatest/
 conda create -n opendata-test python=3.7
 conda activate opendata-test
