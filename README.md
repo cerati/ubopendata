@@ -17,6 +17,7 @@ conda install jupyter
 conda install matplotlib
 conda install plotly
 conda install pandas
+conda install scikit-image
 conda install -c conda-forge particle
 conda install -c conda-forge "h5py>=2.9=mpi*"
 pip install pynuml==0.1
