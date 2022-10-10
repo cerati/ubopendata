@@ -3,7 +3,7 @@
 
 ## Local Setup
 
-These set of notebooks can be run from a conda environment (or similar setup) that includes the following packages and their dependents: python=3.7, scipy, jupyter, matplotlib, h5py\[version='>=2.9',build=mpi*\], plotly, pandas, particle, mpi4py.
+These set of notebooks can be run from a conda environment (or similar setup) that includes the following packages and their dependents: python=3.7, scipy, jupyter, matplotlib, h5py, plotly, pandas, particle, scikit-image.
 Plus the pynuml package for helper functions used to easily access information in the files.
 
 Recipe:
