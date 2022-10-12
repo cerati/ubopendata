@@ -6,34 +6,37 @@ def nplanes():
 def nwires(p):
     if p==0: return 2400
     elif p==1: return 2400
-    elif p==2: return 3455
+    elif p==2: return 3456
     else: raise RuntimeError('plane %i is out of range'%p)
+
+def ntimeticks():
+    return 6400
 
 def nopdets():
     return 32
 
 def wireStartPosPlane0(w):
-    if w<0 or w>2399: raise RuntimeError('wire %i is out of range'%w)
+    if w<0 or w>=2400: raise RuntimeError('wire %i is out of range'%w)
     return [0,np.maximum(117.153-0.34641*w,-115.505),np.maximum(-402.941+0.6*w,0.0352608)]
 
 def wireEndPosPlane0(w):
-    if w<0 or w>2399: raise RuntimeError('wire %i is out of range'%w)
+    if w<0 or w>=2400: raise RuntimeError('wire %i is out of range'%w)
     return [0,np.minimum(715.8006-0.34640*w,117.445),np.minimum(0.541+0.6*w,1036.96)]
 
 def wireStartPosPlane1(w):
-    if w<0 or w>2399: raise RuntimeError('wire %i is out of range'%w)
+    if w<0 or w>=2400: raise RuntimeError('wire %i is out of range'%w)
     return [-0.3,np.minimum(-115.213+0.34641*w,117.445),np.maximum(-402.941+0.6*w,0.0352608)]
 
 def wireEndPosPlane1(w):
-    if w<0 or w>2399: raise RuntimeError('wire %i is out of range'%w)
+    if w<0 or w>=2400: raise RuntimeError('wire %i is out of range'%w)
     return [-0.3,np.maximum(-713.8606+0.34640*w,-115.505),np.minimum(0.541+0.6*w,1036.96)]
 
 def wireStartPosPlane2(w):
-    if w<0 or w>3455: raise RuntimeError('wire %i is out of range'%w)
+    if w<0 or w>=3456: raise RuntimeError('wire %i is out of range'%w)
     return [-0.6,-115.53,0.25+0.3*w]
 
 def wireEndPosPlane2(w):
-    if w<0 or w>3455: raise RuntimeError('wire %i is out of range'%w)
+    if w<0 or w>=3456: raise RuntimeError('wire %i is out of range'%w)
     return [-0.6,117.47,0.25+0.3*w]
 
 def wireStartPos(p,w):
@@ -109,5 +112,14 @@ def barycenter(x,w):
 def width(x,w):
     return np.sqrt(((w*x*x).sum()*w.sum() - (w*x).sum()*(w*x).sum()))/w.sum()
 
-def normOne(a):
-    return np.ones_like(a)/len(a)
+import enum
+class category(enum.Enum):
+    pion = 0
+    muon = 1
+    kaon = 2
+    proton = 3
+    electron = 4
+    michel = 5
+    delta = 6
+    other = 7
+    photon = 8
